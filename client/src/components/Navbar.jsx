@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Button from "./Button";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"; // Assuming you have an AuthContext
 
 function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext); // Get user and logout from AuthContext
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/auth/login');
+  };
+
   return (
     <>
       <nav className="bg-[#ffff]">
@@ -45,7 +54,7 @@ function Navbar() {
                 }
               >
                 Home
-              </NavLink>{" "}
+              </NavLink>
             </li>
             <li>
               <NavLink
@@ -54,7 +63,6 @@ function Navbar() {
                   isActive ? "border-b-2 border-blue-700" : ""
                 }
               >
-                {" "}
                 About
               </NavLink>
             </li>
@@ -67,7 +75,7 @@ function Navbar() {
                   }
                 >
                   Services
-                </NavLink>{" "}
+                </NavLink>
               </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +103,7 @@ function Navbar() {
                 }
               >
                 Blog
-              </NavLink>{" "}
+              </NavLink>
             </li>
             <li>
               <NavLink
@@ -105,20 +113,37 @@ function Navbar() {
                 }
               >
                 Contact
-              </NavLink>{" "}
+              </NavLink>
             </li>
           </ul>
 
           {/* Buttons */}
           <div className="hidden md:flex items-center gap-[10px]">
-            <Button
-              text="Lahore"
-              variant="secondary"
-              onClick={() => console.log("Lahore button clicked")}
-            />
-            <NavLink to="/auth/login">
-              <Button text="Signup" variant="primary" />
-            </NavLink>
+            {user ? (
+              // If user is logged in
+              <div className="flex items-center gap-[10px]">
+                <span className="text-[#2937B1]">
+                  {user.name || user.email}
+                </span>
+                <Button
+                  text="Logout"
+                  variant="primary"
+                  onClick={handleLogout}
+                />
+              </div>
+            ) : (
+              // If user is not logged in
+              <>
+                <Button
+                  text="Lahore"
+                  variant="secondary"
+                  onClick={() => console.log("Lahore button clicked")}
+                />
+                <NavLink to="/auth/login">
+                  <Button text="Signup" variant="primary" />
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
 
@@ -136,62 +161,40 @@ function Navbar() {
             ✕
           </button>
           <ul className="flex flex-col items-start gap-[20px] p-[20px] text-[#2937B1] font-medium text-[16px] leading-[26px] tracking-[-0.16px] font-wixmadefor">
-            <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  isActive ? "border-b-2 border-blue-700" : ""
-                }
-              >
-                Home
-              </NavLink>{" "}
-            </li>
-            <li>
-              <NavLink
-                to="/about"
-                className={({ isActive }) =>
-                  isActive ? "border-b-2 border-blue-700" : ""
-                }
-              >
-                {" "}
-                About
-              </NavLink>
-            </li>
-            <li className="flex items-center gap-[5px]">
-              <NavLink
-                to="/services"
-                className={({ isActive }) =>
-                  isActive ? "border-b-2 border-blue-700" : ""
-                }
-              >
-                Services
-              </NavLink>{" "}
-            </li>
-            <li>
-              <NavLink
-                to="/blog"
-                className={({ isActive }) =>
-                  isActive ? "border-b-2 border-blue-700" : ""
-                }
-              >
-                Blog
-              </NavLink>{" "}
-            </li>
-            <li>
-              <NavLink
-                to="/contact"
-                className={({ isActive }) =>
-                  isActive ? "border-b-2 border-blue-700" : ""
-                }
-              >
-                Contact
-              </NavLink>{" "}
-            </li>
+            {/* Mobile menu items */}
+            {user && (
+              <li className="w-full text-center">
+                <span className="text-[#2937B1]">
+                  {user.name || user.email}
+                </span>
+              </li>
+            )}
+            {/* Existing menu items... */}
+            
+            {user ? (
+              <li className="w-full">
+                <button 
+                  onClick={handleLogout} 
+                  className="w-full text-left text-red-500"
+                >
+                  Logout
+                </button>
+              </li>
+            ) : (
+              <li>
+                <NavLink
+                  to="/auth/login"
+                  className={({ isActive }) =>
+                    isActive ? "border-b-2 border-blue-700" : ""
+                  }
+                >
+                  Login
+                </NavLink>
+              </li>
+            )}
           </ul>
         </div>
       </nav>
-
-      {/* <div className="bg-yellow-200 h-screen"></div> */}
     </>
   );
 }
