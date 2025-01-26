@@ -1,2 +1,2 @@
-# PERN-start
-start pern here
+# HELPIFY
+helpify

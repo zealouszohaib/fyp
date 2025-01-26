@@ -9,6 +9,8 @@ import AnimatedRoute from './components/Layout/AnimateRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { setAuthToken } from './api/axios';
 import { me } from './api/auth';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 
 function App() {
